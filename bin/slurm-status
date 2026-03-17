@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+CLUSTER="${1}"
+
+ssh "${CLUSTER}" squeue --me

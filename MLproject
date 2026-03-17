@@ -1,0 +1,6 @@
+name: pgp-vlm-compression
+
+entry_points:
+
+    evaluate:
+        command: "python -m pgp-vlm-compression.evaluate"
