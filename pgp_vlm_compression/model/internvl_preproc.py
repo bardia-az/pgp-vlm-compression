@@ -1,10 +1,9 @@
+from PIL import Image
 from functools import partial
-import cv2
-import open_clip
+import torch
+import argparse
 import os
-import time
-from pathlib import Path
-import datetime
+import open_clip
 
 from vlmeval.vlm.internvl.internvl_chat import *
 from vlmeval.vlm.internvl.utils import *
@@ -13,22 +12,6 @@ from vlmeval.config import supported_VLM
 from pgp_vlm_compression.utils.utils import compress_image
 from pgp_vlm_compression.prefiltering.prefilter import prefilter_image
 from pgp_vlm_compression import TinyCLIP
-
-
-def _log_internvl_timing(elapsed_ms: float, compress_ratio: int, compress_format: str, width: int, height: int) -> None:
-    """
-    Append one timing sample to a CSV file if COMPRESS_TIMINGS_FILE is set.
-    CSV header: elapsed_ms,compress_ratio,compress_format,width,height,timestamp
-    """
-    path = os.environ.get("COMPRESS_TIMINGS_FILE", "")
-    if not path:
-        return
-    p = Path(path)
-    write_header = not p.exists() or p.stat().st_size == 0
-    with open(path, "a") as f:
-        if write_header:
-            f.write("elapsed_ms,compress_ratio,compress_format,width,height,timestamp\n")
-        f.write(f"{elapsed_ms:.4f},{compress_ratio},{compress_format},{width},{height},{datetime.datetime.utcnow().isoformat()}Z\n")
 
 
 def load_image_preproc(
@@ -68,25 +51,17 @@ def load_image_preproc(
             pre_text_summ=args.pre_text_summ,
             preproc_prompt=args.preproc_prompt,
         )
-        start = time.perf_counter()
         image, compressed_bpp = compress_image(
             image_filtered,
             quality=args.compress_ratio,
             format=args.compress_format,
         )
-        end = time.perf_counter()
-        elapsed_ms = (end - start) * 1000
-        _log_internvl_timing(elapsed_ms, args.compress_ratio, args.compress_format, width, height)
         if args.show_image:
             image.show()
     else:
         image = orig_image
         if args.compress_ratio != 0:
-            start = time.perf_counter()
             image, compressed_bpp = compress_image(image, quality=args.compress_ratio, format=args.compress_format)
-            end = time.perf_counter()
-            elapsed_ms = (end - start) * 1000
-            _log_internvl_timing(elapsed_ms, args.compress_ratio, args.compress_format, width, height)
             if args.show_image:
                 image.show()
 

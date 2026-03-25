@@ -1,9 +1,7 @@
 from PIL import Image
 from functools import partial
-import numpy as np
 import torch
 import argparse
-import cv2
 import os
 import open_clip
 

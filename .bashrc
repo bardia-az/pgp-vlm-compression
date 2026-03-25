@@ -32,6 +32,3 @@ export TRAINING_BASE_IMAGE="ubuntu:${VERSION_UBUNTU}"
 
 # Flags
 export DEVELOPMENT_MODE=1
-
-# Additional Credentials
-export HF_TOKEN="${HF_TOKEN:-$(ansible-vault-view .huggingface.token)}"
