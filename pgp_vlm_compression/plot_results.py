@@ -79,7 +79,7 @@ def plot_rate_accuracy(
         plt.tight_layout()
         # plt.show()
         plt.xlim(plot_xlim)
-        plt.savefig(ROOT / f"rate_accuracy_{ds}_{mdl}_{category}_abb_new.png")
+        plt.savefig(ROOT.parent / "figures" / f"rate_accuracy_{ds}_{mdl}_{category}.png")
 
 
 if __name__ == "__main__":
