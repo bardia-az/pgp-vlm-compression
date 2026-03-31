@@ -13,7 +13,6 @@ from compressai.ops import compute_padding
 from torchvision import transforms
 import torch.nn.functional as F
 
-import sfu_torch_lib.utils as utils
 
 register_heif_opener()
 
@@ -167,28 +166,6 @@ def compress_image_jpeg_cv(img, quality):
     cv_img_rgb = cv2.cvtColor(decoded_img, cv2.COLOR_BGR2RGB)
     compressed_image = Image.fromarray(cv_img_rgb)
     return compressed_image, bpp
-
-
-def is_debug_mode() -> bool:
-    return utils.to_bool_or_false(os.getenv('DEBUG_MODE'))
-
-
-def get_available_filename(path: str) -> str:
-    """
-    If `path` exists, increment the filename with _1, _2, ... until available.
-    Keeps the original extension.
-    """
-    directory, filename = os.path.split(path)
-    name, ext = os.path.splitext(filename)
-    
-    counter = 1
-    new_path = path
-    while os.path.exists(new_path):
-        new_filename = f"{name}_{counter}{ext}"
-        new_path = os.path.join(directory, new_filename)
-        counter += 1
-    
-    return new_path
 
 
 def update_json_file(filepath, new_data):
